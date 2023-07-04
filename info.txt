@@ -1,0 +1,3 @@
+name = [TDMP] Commands system
+author = morgana
+description = [noupload] Adds an admin system to the game, type !help for a list of all commands, commands are serverside only so feel free to make a local copy and add your own if you are the host. (Built in kick and ban commands won't work until the new TDMP update)
