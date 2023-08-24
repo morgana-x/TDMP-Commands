@@ -19,7 +19,7 @@ Hook_AddListener("TDMP_ChatAdminInit", "TDMP_ChatAdminInitCommand_VoteRestart", 
             if votedPlayers[pl.steamId] then TDMP_SendChatMessageToPlayer(pl.steamId, {1,0,0}, "|", {1,1,1}, " You have already voted!") return end
             votedPlayers[pl.steamId] = true
             votesForRestart = votesForRestart + 1
-            TDMP_BroadcastChatMessage({1,0.5,0.2}, TDMP_SimplifyPlayer(pl), {1,1,1}, "  has voted for to restart the game.", {1,0.5,0.2}, "(" .. tostring(votesForRestart) .. "/" .. tostring(#TDMP_GetPlayers()) .. ")" )
+            TDMP_BroadcastChatMessage(TDMP_GetPlayerColorSafe(pl), TDMP_SimplifyPlayer(pl), {1,1,1}, "  has voted for to restart the game.", {1,0.5,0.2}, "(" .. tostring(votesForRestart) .. "/" .. tostring(#TDMP_GetPlayers()) .. ")" )
             if votesForRestart >= #TDMP_GetPlayers() / 2 then
                 TDMP_BroadcastChatMessage({1,0.5,0.2}, "Restart vote succesful, restart commencing soon." )
                 TDMP_ServerStartEvent("Restart", {

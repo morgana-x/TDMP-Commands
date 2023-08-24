@@ -4,7 +4,7 @@
 #include "tdmp/utilities.lua"
 #include "tdmp/chat.lua"
 #include "tdmp/json.lua"
-
+#include "cfg.lua"
 #include "commands.lua" -- Help, goto, bring
 #include "commands_ranks.lua" -- setrank, getrank, ranks
 #include "commands_moderation.lua" -- mute, kick, ban
@@ -140,8 +140,14 @@ function processCommand(steamId, msg)
     local args = string_split(msg)
     local tcmd = args[1]:sub(2);
     local cmd = TDMP_Commands[tcmd]
-    
-    if not cmd then TDMP_SendChatMessageToPlayer(steamId, {0,1,0}, "Command \"" .. tcmd .. "\" does not exist!" ) return "" end 
+    if (not cmd) then 
+        if customInvalidCommandSystem then
+            TDMP_SendChatMessageToPlayer(steamId, {0,1,0}, "Command \"" .. tcmd .. "\" does not exist!" ) 
+            return "" 
+        else
+            return
+        end
+    end 
     if not TDMP_CanUseCommand(steamId, cmd) then
         TDMP_SendChatMessageToPlayer(steamId, {1,0,0}, "This command is ", {1,1,0}, cmd.rank, {1,0,0}, "+" ) 
         return ""  
@@ -151,6 +157,7 @@ function processCommand(steamId, msg)
     return ""
 end
 
+local sendStartMessageList = {}
 Hook_AddListener("TDMP_ChatSuppressMessage", "TDMP_ChatCommandMaster", function(msgData)
     msgData = json.decode(msgData)
     return processCommand(msgData[2], msgData[1])
@@ -163,5 +170,21 @@ function init()
         SetPlayerTransform(Transform(Vec(pos[1], pos[2], pos[3])))
     end)
     Hook_Run("TDMP_ChatAdminInit")
-    
+    sendStartMessageList[TDMP_LocalSteamID] = GetTime() + startMessageDelay
 end
+
+function update()
+    for steamid, time in pairs(sendStartMessageList) do
+        if (time ~= nil) and (GetTime() > time) then
+            for _, msg in ipairs(startMessage) do
+                TDMP_SendChatMessageToPlayer(steamid, unpack(msg))
+            end
+            sendStartMessageList[steamid] = nil
+        end
+    end
+end
+
+Hook_AddListener("PlayerConnected", "TDMP_PlayerConnected", function(steamid)
+    if not sendStartMessage then return end
+    sendStartMessageList[steamid] = GetTime() + startMessageDelay
+end)
