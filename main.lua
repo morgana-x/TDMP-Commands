@@ -9,6 +9,7 @@
 #include "commands_ranks.lua" -- setrank, getrank, ranks
 #include "commands_moderation.lua" -- mute, kick, ban
 #include "commands_voterestart.lua" -- voterestart
+#include "commands_fun.lua" -- car
 
 --[[ 
     ///////////// DISABLED MODULES DUE TO TECHNICAL ISSUES MAKING THEM IMPOSSIBLE /////////////
