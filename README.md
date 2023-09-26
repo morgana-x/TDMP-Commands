@@ -1,2 +1,2 @@
-# TDMP-Commands
+# TDMP Commands
 Admin system for teardown multiplayer
